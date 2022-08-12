@@ -1,0 +1,80 @@
+from art import*
+from termcolor import colored, cprint
+import colorama
+from colorama import Fore, Back, Style
+Art=text2art("DIET-PLANNER")
+colorama.init(autoreset=False)
+colorama.init(convert=True)
+def user_info():
+    cprint(":> What is your age:", 'green',end = ' ')
+    print(Fore.RED +Style.BRIGHT)
+    age = int(input())
+    cprint(":> What is your gender:", 'green',end = ' ')
+    print(Fore.RED +Style.BRIGHT)
+    gender = input()
+    gender = gender.lower()
+    cprint(":> What is your weight:", 'green',end = ' ')
+    print(Fore.RED +Style.BRIGHT)
+    weight = int(input())
+    cprint(":> What is your height in cm:", 'green',end = ' ')
+    print(Fore.RED +Style.BRIGHT)
+    height = int(input())
+
+    if gender == 'male':
+        c1 = 88.362
+        hm = 4.799 * height
+        wm = 13.397 * weight
+        am = 5.677 * age
+    elif gender == 'female':
+        c1 = 447.593
+        hm = 3.098 * height
+        wm = 9.247 * weight
+        am = 4.330 * age
+
+    #Men: BMR = 88.362 + (13.397 x weight in kg) + (4.799 x height in cm) – (5.677 x age in years)
+    #Women: BMR = 447.593 + (9.247 x weight in kg) + (3.098 x height in cm) – (4.330 x age in years)
+    bmr_result = c1 + hm + wm - am
+    return(int(bmr_result))
+
+def calculate_activity(bmr_result): 
+    cprint(":> What is your activity level (none, light, moderate, heavy, or extreme):", 'green',end = ' ')
+    print(Fore.RED +Style.BRIGHT)
+    activity_level = input()
+    activity_level = activity_level.lower()
+    if activity_level == 'none':
+        activity_level = 1.2 * bmr_result
+    elif activity_level == 'light':
+        activity_level = 1.375 * bmr_result
+    elif activity_level == 'moderate':
+        activity_level = 1.55 * bmr_result
+    elif activity_level == 'heavy':
+        activity_level = 1.725 * bmr_result
+    elif activity_level == 'extreme':
+        activity_level = 1.9 * bmr_result
+
+    return(int(activity_level))
+
+def gain_or_lose(activity_level):
+    cprint(":> Do you want to lose, maintain, or gain weight:", 'green',end = ' ')
+    print(Fore.RED +Style.BRIGHT)
+    goals = input()
+    goals= goals.lower()
+    if goals == 'lose':
+        calories = activity_level - 235
+    elif goals == 'maintain':
+        calories = activity_level
+    elif goals == 'gain':
+        cprint(":> Gain 1 or 2 KG per week? Enter 1 or 2:", 'green',end = ' ')
+        print(Fore.RED +Style.BRIGHT)
+        gain = int(input())
+        if gain == 1: 
+            calories = activity_level + 1000
+        elif gain == 2:
+            calories = activity_level + 500
+
+    f = open("daily_goal.txt", "w")
+    f.write(str(calories))
+    f.close()
+
+cprint(Art,color="cyan")
+gain_or_lose(calculate_activity(user_info()))
